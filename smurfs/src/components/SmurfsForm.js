@@ -1,60 +1,64 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React, { useState } from 'react'
+import axios from 'axios'
 
-class SmurfForm extends Component {
-  constructor() {
-    super();
-    this.state = {
-      name: "",
-      age: "",
-      height: ""
-    };
-  }
 
-  onChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-    console.log(this.setState);
-  };
+function SmurfsForm() {
+    
+    const [ smurfForm, setSmurfForm  ] = useState({ name:'', age: '', height:'' })
 
-  onSubmit = e => {
-    e.preventDefault();
-    const { name, age, height } = this.state;
 
-    axios
-      .post("http://localhost:3333/smurfs", { name, age, height })
-      .then(res => {
-        console.log(res);
-      });
-  };
+const handleOnchange = (e) => {
 
-  render() {
-    return (
-      <form>
-        <input
-          type="text"
-          name="name"
-          placeholder="name"
-          value={this.state.name}
-          onChange={this.onChange}
-        />
-        <input
-          type="text"
-          name="age"
-          placeholder="age"
-          value={this.state.age}
-          onChange={this.onChange}
-        />
-        <input
-          type="text"
-          name="height"
-          placeholder="height"
-          value={this.state.height}
-          onChange={this.onChange}
-        />
-        <button onClick={this.onSubmit}>Add Smurf</button>
-      </form>
-    );
-  }
+    setSmurfForm({...smurfForm, [e.target.name]: e.target.value })
+
 }
 
-export default SmurfForm;
+const handleSubmit = (e) => {
+    e.preventDefault()
+  axios
+    .post('http://localhost:3333/smurfs', smurfForm)
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
+    .finally(() => window.location.reload())
+
+}
+
+    return (
+
+        <form onSubmit={handleSubmit}>
+            <h1>Add a new Smurf</h1>
+            <label>
+                <input 
+                  name='name' 
+                  type='text' 
+                  value={smurfForm.value} 
+                  onChange={handleOnchange} 
+                  placeholder='name'>
+                </input>
+            </label>
+            <label>
+                <input 
+                  name='age' 
+                  type='number' 
+                  values={smurfForm.value} 
+                  onChange={handleOnchange} 
+                  placeholder='age'>
+                </input>
+            </label>
+            <label>
+                <input 
+                  name='height' 
+                  type='text' 
+                  values={smurfForm.value} 
+                  onChange={handleOnchange} 
+                  laceholder='height in cm'>
+                </input>
+            </label>
+            <label>
+                <button type='submit'>ADD</button>
+            </label>
+        </form>
+    )
+}
+
+export default SmurfsForm
